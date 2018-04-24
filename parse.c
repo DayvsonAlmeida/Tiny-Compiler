@@ -43,7 +43,7 @@ static void match(TokenType expected)
 TreeNode * stmt_sequence(void)
 { TreeNode * t = statement();
   TreeNode * p = t;
-  while ((token!=ENDFILE) && (token!=END) &&
+  while ((token!=ENDFILE) && (token!=ENDIF) &&
          (token!=ELSE) && (token!=UNTIL) && (token!=CASE) && (token!=ENDSWITCH))
   { TreeNode * q;
     match(SEMI);
@@ -85,7 +85,7 @@ TreeNode * if_stmt(void)
     match(ELSE);
     if (t!=NULL) t->child[2] = stmt_sequence();
   }
-  match(END);
+  match(ENDIF);
   return t;
 }
 

@@ -56,9 +56,9 @@ static struct
     { char* str;
       TokenType tok;
     } reservedWords[MAXRESERVED]
-   = {{"if",IF},{"then",THEN},{"else",ELSE},{"end",END},
+   = {{"if",IF},{"then",THEN},{"else",ELSE},{"endif",ENDIF},
       {"repeat",REPEAT},{"until",UNTIL},{"read",READ},
-      {"write",WRITE}};
+      {"write",WRITE}, {"while", WHILE}, {"endwhile", ENDWHILE}};
 
 /* lookup an identifier to see if it is a reserved word */
 /* uses linear search */
@@ -85,11 +85,11 @@ TokenType getToken(void)
    StateType state = START;
    /* flag to indicate save to tokenString */
    int save;
-   while (state != DONE)
-   { int c = getNextChar();
+   while (state != DONE){
+     int c = getNextChar();
      save = TRUE;
-     switch (state)
-     { case START:
+     switch (state){
+       case START:
          if (isdigit(c))
            state = INNUM;
          else if (isalpha(c))
@@ -98,14 +98,13 @@ TokenType getToken(void)
            state = INASSIGN;
          else if ((c == ' ') || (c == '\t') || (c == '\n'))
            save = FALSE;
-         else if (c == '{')
-         { save = FALSE;
+         else if (c == '{'){
+           save = FALSE;
            state = INCOMMENT;
-         }
-         else
-         { state = DONE;
-           switch (c)
-           { case EOF:
+         }else{
+           state = DONE;
+           switch (c){
+             case EOF:
                save = FALSE;
                currentToken = ENDFILE;
                break;
@@ -144,26 +143,25 @@ TokenType getToken(void)
          break;
        case INCOMMENT:
          save = FALSE;
-         if (c == EOF)
-         { state = DONE;
+         if (c == EOF){
+           state = DONE;
            currentToken = ENDFILE;
-         }
-         else if (c == '}') state = START;
+         }else if (c == '}')  state = START;
          break;
        case INASSIGN:
          state = DONE;
          if (c == '=')
            currentToken = ASSIGN;
-         else
-         { /* backup in the input */
+         else{
+           /* backup in the input */
            ungetNextChar();
            save = FALSE;
            currentToken = DDOT;
          }
          break;
        case INNUM:
-         if (!isdigit(c))
-         { /* backup in the input */
+         if (!isdigit(c)){
+           /* backup in the input */
            ungetNextChar();
            save = FALSE;
            state = DONE;
@@ -171,8 +169,8 @@ TokenType getToken(void)
          }
          break;
        case INID:
-         if (!isalpha(c))
-         { /* backup in the input */
+         if (!isalpha(c)){
+           /* backup in the input */
            ungetNextChar();
            save = FALSE;
            state = DONE;
@@ -188,8 +186,8 @@ TokenType getToken(void)
      }
      if ((save) && (tokenStringIndex <= MAXTOKENLEN))
        tokenString[tokenStringIndex++] = (char) c;
-     if (state == DONE)
-     { tokenString[tokenStringIndex] = '\0';
+     if (state == DONE){
+       tokenString[tokenStringIndex] = '\0';
        if (currentToken == ID)
          currentToken = reservedLookup(tokenString);
      }
