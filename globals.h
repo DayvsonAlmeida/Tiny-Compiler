@@ -23,7 +23,7 @@
 #endif
 
 /* MAXRESERVED = the number of reserved words */
-#define MAXRESERVED 11
+#define MAXRESERVED 8
 
 typedef enum
     /* book-keeping tokens */
