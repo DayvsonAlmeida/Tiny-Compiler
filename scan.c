@@ -26,6 +26,8 @@ static int linepos = 0; /* current position in LineBuf */
 static int bufsize = 0; /* current size of buffer string */
 static int EOF_flag = FALSE; /* corrects ungetNextChar behavior on EOF */
 
+static int USING_ = FALSE; /* control flag to accept ids with underline */
+
 /* getNextChar fetches the next non-blank character
    from lineBuf, reading in a new line if lineBuf is
    exhausted */
@@ -67,6 +69,8 @@ static TokenType reservedLookup (char * s)
   for (i=0;i<MAXRESERVED;i++)
     if (!strcmp(s,reservedWords[i].str))
       return reservedWords[i].tok;
+  if(s[0] == '_' && (s[1]=='_' || s[1]=='\0'))
+    return ERROR;
   return ID;
 }
 
@@ -92,9 +96,10 @@ TokenType getToken(void)
        case START:
          if (isdigit(c))
            state = INNUM;
-         else if (isalpha(c))
+         else if (isalpha(c) || c == '_'){
            state = INID;
-         else if (c == ':')
+           if(c =='_') USING_ = TRUE;
+        }else if (c == ':')
            state = INASSIGN;
          else if ((c == ' ') || (c == '\t') || (c == '\n'))
            save = FALSE;
@@ -169,13 +174,22 @@ TokenType getToken(void)
          }
          break;
        case INID:
-         if (!isalpha(c)){
+         if(USING_){
+           if(c == '_'){
+             //ungetNextChar();
+             //save = FALSE;
+             //state = DONE;
+             currentToken = ID;
+           }
+         }
+         if (!isalpha(c) && !isdigit(c) && c!='_'){
            /* backup in the input */
            ungetNextChar();
            save = FALSE;
            state = DONE;
            currentToken = ID;
          }
+         USING_ = FALSE;
          break;
        case DONE:
        default: /* should never happen */
