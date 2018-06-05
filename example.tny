@@ -1,9 +1,4 @@
-read __a;
- if 0 < x then
-  fact := 1;
-  repeat
-    fact := fact * x;
-    x := x - 1
-  until x = 0;
-  write fact
-endif
+while x < 0
+x := 1;
+x := x + 1
+endwhile

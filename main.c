@@ -40,8 +40,8 @@ FILE * code;
 int EchoSource = TRUE;
 int TraceScan = TRUE;
 int TraceParse = TRUE;
-int TraceAnalyze = TRUE;
-int TraceCode = TRUE;
+int TraceAnalyze = FALSE;
+int TraceCode = FALSE;
 
 int Error = FALSE;
 
