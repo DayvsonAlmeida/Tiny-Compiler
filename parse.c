@@ -64,7 +64,7 @@ TreeNode * statement(void)
 { TreeNode * t = NULL;
   switch (token) {
     case IF : t = if_stmt(); break;
-    case WHILE : t = while_stmt(); break; 
+    case WHILE : t = while_stmt(); break;
     case REPEAT : t = repeat_stmt(); break;
     case ID : t = assign_stmt(); break;
     case READ : t = read_stmt(); break;
@@ -95,10 +95,14 @@ TreeNode * while_stmt(void)
 { TreeNode * t = newStmtNode(WhileK);
  	match(WHILE);
  	if (t!=NULL){
-	  t->child[0] = exp_r();
+    if (token==LPAREN){
+      match(LPAREN);
+      t->child[0] = exp_r();
+      match(RPAREN);
+    } else  t->child[0] = exp_r();
 	  t->child[1] = stmt_sequence();
-	} 
- 	match(ENDWHILE);	
+	}
+ 	match(ENDWHILE);
  	return t;
 }
 

@@ -1,0 +1,8 @@
+x := 1;
+while (x < 0)
+x := x + 1;
+repeat
+x := x * x
+until x < 100
+endwhile;
+write x
