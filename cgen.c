@@ -102,7 +102,21 @@ static void genStmt( TreeNode * tree)
          emitRM_Abs("JEQ",ac,savedLoc1,"repeat: jmp back to body");
          if (TraceCode)  emitComment("<- repeat") ;
          break; /* repeat */
-
+      
+      case WhileK:
+         if (TraceCode) emitComment("-> while");
+         p1 = tree->child[0];
+         p2 = tree->child[1];
+         //Provavelmente colocar o savedLocX = emitSkip(X)
+         //Emitir Comentário
+         savedLoc1 = emitSkip(0);
+         emitComment("while: jmp after body comes back here");
+         cGen(p2);
+         cGen(p1);
+         emitRM_Abs("JNE", ac, savedLoc1, "while: jmp back to body");
+         if (TraceCode) emitComment("<- while");
+         break;   
+      
       case AssignK:
          if (TraceCode) emitComment("-> assign") ;
          /* generate code for rhs */
