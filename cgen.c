@@ -109,13 +109,19 @@ static void genStmt( TreeNode * tree)
          p2 = tree->child[1];
          //Provavelmente colocar o savedLocX = emitSkip(X)
          //Emitir Comentário
-         savedLoc1 = emitSkip(0);
          emitComment("while: jmp after body comes back here");
-         cGen(p2);
+         savedLoc1 = emitSkip(0);
          cGen(p1);
-         emitRM_Abs("JNE", ac, savedLoc1, "while: jmp back to body");
+         savedLoc2 = emitSkip(1);
+         cGen(p2);
+         emitRM_Abs("LDA", pc, savedLoc1, "jump to end");
+         currentLoc = emitSkip(0);
+         emitBackup(savedLoc2);
+         emitRM_Abs("JEQ", ac, currentLoc, "while: jump back to body");
+         emitRestore();
          if (TraceCode) emitComment("<- while");
          break;   
+      
       
       case AssignK:
          if (TraceCode) emitComment("-> assign") ;
